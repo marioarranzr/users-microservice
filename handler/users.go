@@ -14,7 +14,6 @@ type Users struct {
 }
 
 func (u *Users) Get(c echo.Context) error {
-	// build user object
 	user := &domain.User{}
 	if err := c.Bind(user); err != nil {
 		log.Error(err)
@@ -30,7 +29,6 @@ func (u *Users) Get(c echo.Context) error {
 }
 
 func (u *Users) Post(c echo.Context) error {
-	// build user object
 	user := &domain.User{}
 	if err := c.Bind(user); err != nil {
 		log.Error(err)
@@ -46,7 +44,6 @@ func (u *Users) Post(c echo.Context) error {
 }
 
 func (u *Users) Put(c echo.Context) error {
-	// build user object
 	user := &domain.User{}
 	if err := c.Bind(user); err != nil {
 		log.Error(err)
@@ -62,7 +59,6 @@ func (u *Users) Put(c echo.Context) error {
 }
 
 func (u *Users) Delete(c echo.Context) error {
-	// build user object
 	user := &domain.User{}
 	if err := c.Bind(user); err != nil {
 		log.Error(err)

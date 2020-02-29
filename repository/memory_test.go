@@ -99,6 +99,15 @@ func TestMemory_Insert(t *testing.T) {
 				u: &mario,
 			},
 		},
+		{
+			name: "not inserted (user already exist)",
+			users: []*domain.User{
+				&mario,
+			}, args: args{
+				u: &mario,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

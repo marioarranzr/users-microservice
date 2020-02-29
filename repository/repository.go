@@ -4,7 +4,7 @@ import (
 	"github.com/marioarranzr/users-microservice/domain"
 )
 
-// Storage represents a place where keeping the data
+// Users represents the users repository interface
 type Users interface {
 	Find(user *domain.User) ([]*domain.User, error)
 	Insert(user *domain.User) error

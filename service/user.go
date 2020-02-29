@@ -11,7 +11,7 @@ type users struct {
 	Repo repository.Users
 }
 
-// NewService creates an adding service with the necessary dependencies
+// New creates a user servide
 func New(r repository.Users) Users {
 	return &users{
 		Repo: r,

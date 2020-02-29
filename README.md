@@ -33,7 +33,8 @@ Please explain what are the criteria and assumptions you used to take decisions.
 
 ## REST API
 
-This API must comply with the following contract:
+The application is divided in diferent layers, service and repository, making easier to move to another database or use diferent service, just re implementing the interface methods.
+This `CRUD` API must comply with the following contract:
 ### GET /health
 
 Responses:
@@ -148,12 +149,13 @@ make test
 The app will run in port `9091`
 
 
-### Assumptions:
+### Considerations:
 
 - The in-memory database is simply a list of users.
 - When a user is inserted, the system checks that the nickname is not already in the database.
 - Nickname is mandatory when insterting and not allowed to modify.
 - When updating a user, it will search by nickname and update the other fields in the request.
+- The underneath layers send the errors to the handlers, where the logging is done. Depending on how much logging detail the application needs, an extra debug logging in the repository and service layers can be added if needed.
 - The comunication among microservices will be done in the API Gateway that would make the requests to each microservice. I.e. To add a payment method in the system, from the Gateway it will be necessary at least 2 requests:
   
   - user microservice

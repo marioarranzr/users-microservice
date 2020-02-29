@@ -79,9 +79,7 @@ func Test_users_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &users{
-				Repo: repository.NewMemory(tt.repo),
-			}
+			s := New(repository.NewMemory(tt.repo))
 			gotList, err := s.Get(tt.args.u)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("users.Get() error = %v, wantErr %v", err, tt.wantErr)
@@ -124,12 +122,22 @@ func Test_users_Post(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "not inserted (empty nikname)",
+			repo: []*domain.User{
+				&mario,
+			},
+			args: args{
+				u: &domain.User{
+					FirstName: "Mario",
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &users{
-				Repo: repository.NewMemory(tt.repo),
-			}
+			s := New(repository.NewMemory(tt.repo))
 			if err := s.Post(tt.args.u); (err != nil) != tt.wantErr {
 				t.Errorf("users.Post() error = %v, wantErr %v", err, tt.wantErr)
 			}
