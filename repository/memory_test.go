@@ -14,17 +14,10 @@ var mario = domain.User{
 }
 
 func TestMemory_Find(t *testing.T) {
-	type args struct {
-		firstName string
-		lastName  string
-		nickname  string
-		email     string
-		country   string
-	}
 	tests := []struct {
 		name    string
 		users   []*domain.User
-		args    args
+		args    *domain.User
 		want    *domain.User
 		wantErr bool
 	}{
@@ -33,18 +26,18 @@ func TestMemory_Find(t *testing.T) {
 			users: []*domain.User{
 				&mario,
 			},
-			args: args{
-				firstName: "Mario",
-				lastName:  "Arranz",
+			args: &domain.User{
+				FirstName: "Mario",
+				LastName:  "Arranz",
 			},
 			want: &mario,
 		},
 		{
 			name:  "not found (empty database)",
 			users: nil,
-			args: args{
-				firstName: "Mario",
-				lastName:  "Smith",
+			args: &domain.User{
+				FirstName: "Mario",
+				LastName:  "Smith",
 			},
 			wantErr: true,
 		},
@@ -53,9 +46,9 @@ func TestMemory_Find(t *testing.T) {
 			users: []*domain.User{
 				&mario,
 			},
-			args: args{
-				firstName: "Mario",
-				lastName:  "Smith",
+			args: &domain.User{
+				FirstName: "Mario",
+				LastName:  "Smith",
 			},
 			wantErr: true,
 		},
@@ -64,9 +57,9 @@ func TestMemory_Find(t *testing.T) {
 			users: []*domain.User{
 				&mario,
 			},
-			args: args{
-				firstName: "Peter",
-				lastName:  "Smith",
+			args: &domain.User{
+				FirstName: "Peter",
+				LastName:  "Smith",
 			},
 			wantErr: true,
 		},
@@ -74,13 +67,16 @@ func TestMemory_Find(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := NewMemory(tt.users)
-			got, err := m.Find(tt.args.firstName, tt.args.lastName, tt.args.nickname, tt.args.email, tt.args.country)
+			gotList, err := m.Find(tt.args)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Memory.Find() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Memory.Find() = %v, want %v", got, tt.want)
+			if err == nil {
+				got := gotList[0]
+				if !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("Memory.Find() = %v, want %v", got, tt.want)
+				}
 			}
 		})
 	}
@@ -114,7 +110,7 @@ func TestMemory_Insert(t *testing.T) {
 	}
 }
 
-func TestMemory_Insert_Find_Update_Remove(t *testing.T) {
+func TestMemory_Insert_Find_Update_Delete(t *testing.T) {
 	type args struct {
 		u *domain.User
 	}
@@ -136,16 +132,29 @@ func TestMemory_Insert_Find_Update_Remove(t *testing.T) {
 			if err := m.Insert(tt.args.u); err != nil {
 				t.Errorf("Memory.Insert() error = %v", err)
 			}
-			got, err := m.Find(tt.args.u.FirstName, tt.args.u.LastName, tt.args.u.Nickname, tt.args.u.Email, tt.args.u.Country)
+			gotList, err := m.Find(tt.args.u)
 			if err != nil {
 				t.Errorf("Memory.Find() error = %v", err)
 				return
 			}
+			got := gotList[0]
 			if !reflect.DeepEqual(got, tt.args.u) {
 				t.Errorf("Memory.Find() = %v, want %v", got, tt.args.u)
 			}
-			// Update
-			// Remove
+			tt.args.u.LastName = "Smith"
+			got, err = m.Modify(tt.args.u)
+			if err != nil {
+				t.Errorf("Memory.Modify() error = %v", err)
+				return
+			}
+			if got.LastName != tt.args.u.LastName {
+				t.Errorf("Memory.Modify() = %v, want %v", got.LastName, tt.args.u.LastName)
+			}
+			err = m.Delete(tt.args.u)
+			if err != nil {
+				t.Errorf("Memory.Delete() error = %v", err)
+				return
+			}
 		})
 	}
 }

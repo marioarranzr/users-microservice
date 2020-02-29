@@ -43,6 +43,8 @@ func loadHandlers(e *echo.Echo, svc service.Users) {
 	}
 	e.GET("/", u.Get)
 	e.POST("/", u.Post)
+	e.PUT("/", u.Put)
+	e.DELETE("/", u.Delete)
 
 	// health-check
 	e.GET("/health", func(c echo.Context) error {
