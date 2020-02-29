@@ -33,6 +33,11 @@ Please explain what are the criteria and assumptions you used to take decisions.
 ## REST API
 
 This API must comply with the following contract:
+### GET /health
+
+Responses:
+
+* **200 OK** When the application is running.
 
 ### POST /users
 
@@ -64,8 +69,12 @@ Responses:
 {
   "first_name": "Mario",
   "last_name": "Arranz",
+  "nickname": "marioarranzr",
+  "password": "******",
   "email": "mario@omg.lol",
+  "country": "Spain"
 }
+
 ```
 * **400 Bad Request** When there is a failure in the request format.
 * **404 Not Found** When there is no user with the parameters requested.
@@ -90,4 +99,8 @@ The app will run in port `9091`
 
 ### Briefing about the solution:
 
+- The in-memory database is simply a list of users.
+- When a user is inserted, the system check it is not already in the database
 
+- Unit tests for repository methods and one extra that tests the complete integration. 
+- Unit tests for service

@@ -17,5 +17,9 @@ func New(r repository.Users) Users {
 }
 
 func (s *users) Get(u *domain.User) (*domain.User, error) {
-	return s.Repo.Find(u.FirstName, u.LastName)
+	return s.Repo.Find(u.FirstName, u.LastName, u.Nickname, u.Email, u.Country)
+}
+
+func (s *users) Post(u *domain.User) error {
+	return s.Repo.Insert(u)
 }

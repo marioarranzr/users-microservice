@@ -30,8 +30,8 @@ test:	### Run unit tests
 	@go test -cover -v -coverprofile=coverage.out ./... 
 	@go tool cover -func=coverage.out                                                                      
 
-.PHONY: debug
-debug:	### Run locally in debug mode
+.PHONY: run
+run:	### Run locally in debug mode
 	@go run main.go                                                                       
 
 .PHONY: dockerize

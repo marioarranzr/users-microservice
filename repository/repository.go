@@ -6,5 +6,6 @@ import (
 
 // Storage represents a place where keeping the data
 type Users interface {
-	Find(firstName, lastName string) (*domain.User, error)
+	Find(firstName, lastName, nickname, email, country string) (*domain.User, error)
+	Insert(user *domain.User) error
 }

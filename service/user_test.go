@@ -20,14 +20,14 @@ func Test_users_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		memory  []*domain.User
+		repo    []*domain.User
 		args    args
 		want    *domain.User
 		wantErr bool
 	}{
 		{
-			name:   "not found, empty storage",
-			memory: nil,
+			name: "not found, empty storage",
+			repo: nil,
 			args: args{
 				u: &domain.User{
 					FirstName: "Mario",
@@ -38,7 +38,7 @@ func Test_users_Get(t *testing.T) {
 		},
 		{
 			name: "found by first and last name",
-			memory: []*domain.User{
+			repo: []*domain.User{
 				&mario,
 			},
 			args: args{
@@ -51,7 +51,7 @@ func Test_users_Get(t *testing.T) {
 		},
 		{
 			name: "not found (find by existing fist name and not existing last name)",
-			memory: []*domain.User{
+			repo: []*domain.User{
 				&mario,
 			},
 			args: args{
@@ -64,7 +64,7 @@ func Test_users_Get(t *testing.T) {
 		},
 		{
 			name: "not found (find by not existing fist name and last name)",
-			memory: []*domain.User{
+			repo: []*domain.User{
 				&mario,
 			},
 			args: args{
@@ -79,7 +79,7 @@ func Test_users_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &users{
-				Repo: repository.NewMemory(tt.memory),
+				Repo: repository.NewMemory(tt.repo),
 			}
 			got, err := s.Get(tt.args.u)
 			if (err != nil) != tt.wantErr {
@@ -88,6 +88,46 @@ func Test_users_Get(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("users.Get() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_users_Post(t *testing.T) {
+	type args struct {
+		u *domain.User
+	}
+	tests := []struct {
+		name    string
+		repo    []*domain.User
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "inserted (empty database)",
+			repo: nil,
+			args: args{
+				u: &mario,
+			},
+		},
+		{
+			name: "not inserted (user already existed)",
+			repo: []*domain.User{
+				&mario,
+			},
+			args: args{
+				u: &mario,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &users{
+				Repo: repository.NewMemory(tt.repo),
+			}
+			if err := s.Post(tt.args.u); (err != nil) != tt.wantErr {
+				t.Errorf("users.Post() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

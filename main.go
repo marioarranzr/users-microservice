@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
@@ -29,14 +31,21 @@ func main() {
 	svc = service.New(repo)
 
 	// Handlers
-	loadUsers(e, svc)
+	loadHandlers(e, svc)
 
+	// Start the server
 	e.Logger.Fatal(e.Start(port))
 }
 
-func loadUsers(e *echo.Echo, svc service.Users) {
+func loadHandlers(e *echo.Echo, svc service.Users) {
 	u := &handler.Users{
 		Svc: svc,
 	}
-	e.GET("/users", u.Get)
+	e.GET("/", u.Get)
+	e.POST("/", u.Post)
+
+	// health-check
+	e.GET("/health", func(c echo.Context) error {
+		return c.NoContent(http.StatusOK)
+	})
 }
